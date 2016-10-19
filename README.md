@@ -9,5 +9,3 @@ Run the following commands to install on your system,
     cd ~
     git clone git://github.com/adibis/nvim.git ~/.config/nvim
     nvim +PlugInstall +qall
-
-More stuff will be added as the Neovim project matures.

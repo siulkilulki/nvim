@@ -1,5 +1,4 @@
 call plug#begin('~/.config/nvim/plugged')
-
 " Plugins {
   " ctrl-p is a fuzzy file finder.
   Plug 'kien/ctrlp.vim'
@@ -7,9 +6,30 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'bling/vim-airline'
   " gruvbox colorscheme. Seems to work the best for me.
   Plug 'morhetz/gruvbox'
+  " autocomplete
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  " autocomplete for c
+  Plug 'zchee/deoplete-clang'
+  " autoinclue
+  Plug 'Shougo/neocomplete.vim'
+  Plug 'iamcco/markdown-preview.vim', {'dir': '~/.config/nvim/_vimrc'}
+"}
+call plug#end()
+
+"Use deoplete.
+  let g:deoplete#enable_at_startup = 1
+
+" Deoplete-clang {
+  let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
+  let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang'
+  let g:deoplete#sources#clang#std = {'c':'c11'}
+  " The sorting algorithm for libclang completion results.
+  " By defalut ('') use the deoplete.nvim sort algorithm.
+  " priority sorts the way libclang determines priority
+  " alphabetical sorts by alphabetical order.
+  " let g:deoplete#sources#clang#sort_algo = 'priority'
 " }
 
-call plug#end()
 
 if has('autocmd')
   filetype plugin indent on
@@ -19,14 +39,14 @@ if has('syntax') && !exists('g:syntax_on')
 endif
 
 " Map the leader key to ,
-let mapleader="\<SPACE>"
+  let mapleader="\<SPACE>"
 
 " General {
   set smarttab
 
-  set noautoindent        " I indent my code myself.
+  "set noautoindent        " I indent my code myself.
   set nocindent           " I indent my code myself.
-  "set smartindent        " Or I let the smartindent take care of it.
+  set smartindent        " Or I let the smartindent take care of it.
 
   set nrformats-=octal
 
@@ -40,9 +60,9 @@ let mapleader="\<SPACE>"
   set gdefault            " Use 'g' flag by default with :s/foo/bar/.
   set magic               " Use 'magic' patterns (extended regular expressions).
 
-  " Use <C-L> to clear the highlighting of :set hlsearch.
-  if maparg('<C-L>', 'n') ==# ''
-    nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+  " Use <C-l> to clear the highlighting of :set hlsearch.
+  if maparg('<C-l>', 'n') ==# ''
+    nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
   endif
 " }
 
@@ -55,8 +75,8 @@ let mapleader="\<SPACE>"
   set formatoptions+=o    " Continue comment marker in new lines.
   set textwidth=0         " Hard-wrap long lines as you type them.
   set expandtab           " Insert spaces when TAB is pressed.
-  set tabstop=2           " Render TABs using this many spaces.
-  set shiftwidth=2        " Indentation amount for < and > commands.
+  set tabstop=4           " Render TABs using this many spaces.
+  set shiftwidth=4        " Indentation amount for < and > commands.
 
   set noerrorbells        " No beeps.
   set modeline            " Enable modeline.
@@ -78,7 +98,7 @@ let mapleader="\<SPACE>"
   set nostartofline       " Do not jump to first character with page commands.
 
   " Tell Vim which characters to show for expanded TABs,
-  " trailing whitespace, and end-of-lines. VERY useful!
+  " trailing whitespace, and end-of-lines. VERY useful
   if &listchars ==# 'eol:$'
     set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
   endif

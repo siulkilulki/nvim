@@ -10,26 +10,20 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   " autocomplete for c
   Plug 'zchee/deoplete-clang'
-  " autoinclue
+  " autoinclude
   Plug 'Shougo/neocomplete.vim'
+  " autocomplete for Python
+  Plug 'zchee/deoplete-jedi'
+  " markdown preview
   Plug 'iamcco/markdown-preview.vim', {'dir': '~/.config/nvim/_vimrc'}
+  " tree file view for vim
+  Plug 'scrooloose/nerdtree'
+  " functions outline on right side of vim
+  Plug 'majutsushi/tagbar'
+  " automatically manage swapfiles
+  Plug 'gioele/vim-autoswap'
 "}
 call plug#end()
-
-"Use deoplete.
-  let g:deoplete#enable_at_startup = 1
-
-" Deoplete-clang {
-  let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
-  let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang'
-  let g:deoplete#sources#clang#std = {'c':'c11'}
-  " The sorting algorithm for libclang completion results.
-  " By defalut ('') use the deoplete.nvim sort algorithm.
-  " priority sorts the way libclang determines priority
-  " alphabetical sorts by alphabetical order.
-  " let g:deoplete#sources#clang#sort_algo = 'priority'
-" }
-
 
 if has('autocmd')
   filetype plugin indent on
@@ -43,15 +37,17 @@ endif
 
 " General {
   set smarttab
-
   "set noautoindent        " I indent my code myself.
   set nocindent           " I indent my code myself.
   set smartindent        " Or I let the smartindent take care of it.
 
   set nrformats-=octal
-
   set ttimeout
   set ttimeoutlen=100
+" }
+
+" Cursor {
+"  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 0
 " }
 
 " Search {
@@ -68,7 +64,7 @@ endif
 
 " Formatting {
   set showcmd             " Show (partial) command in status line.
-  set showmatch           " Show matching brackets.
+"  set showmatch           " Show matching brackets.
   set showmode            " Show current mode.
   set ruler               " Show the line and column numbers of the cursor.
   set number              " Show the line numbers on the left side.
@@ -262,6 +258,45 @@ endif
     " Open most recently used files
     nnoremap <Leader>f :CtrlPMRUFiles<CR>
   " }
+  " Deoplete {
+    "Use deoplete.
+      let g:deoplete#enable_at_startup = 1
+
+    " Deoplete-clang {
+      let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
+      let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang'
+
+      " let g:deoplete#sources#clang#std = {'c':'c11'}
+      " The sorting algorithm for libclang completion results.
+      " By defalut ('') use the deoplete.nvim sort algorithm.
+      " priority sorts the way libclang determines priority
+      " alphabetical sorts by alphabetical order.
+      " let g:deoplete#sources#clang#sort_algo = 'priority'
+    " }
+
+    " Deoplete-jedi Python path
+      let g:deoplete#sources#jedi#python_path = '/usr/bin/python3'
+
+    " auto close preview window when autocomplete is done
+      autocmd CompleteDone * pclose
+    " close popup when open with enter
+      inoremap <expr> <CR> pumvisible()? deoplete#mappings#close_popup() : "\<CR>"
+  " }
+  " NERDTree {
+      " open NERDTree with ctrl-n
+      map <C-n> :NERDTreeToggle<CR>
+      " open a NERDTree automatically when vim starts up if no files were specified
+       autocmd StdinReadPre * let s:std_in=1
+       autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+      " close vim if the only window left open is a NERDTree
+      autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  " }
+  " Tagbar {
+    " open tagbar with ctrl-t
+    map <C-t> :TagbarToggle<CR>
+  " }
+  " yapf auto formatting python code
+  autocmd FileType python nnoremap <leader>y :0,$!yapf<Cr>
 " }
 
 " vim:set ft=vim sw=2 ts=2:

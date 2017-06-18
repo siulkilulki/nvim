@@ -12,6 +12,9 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'zchee/deoplete-clang'
   " autoinclude
   Plug 'Shougo/neocomplete.vim'
+  " snippets
+  " Plug 'Shougo/neosnippet'
+  " Plug 'Shougo/neosnippet-snippets'
   " autocomplete for Python
   Plug 'zchee/deoplete-jedi'
   " markdown preview
@@ -31,6 +34,9 @@ endif
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
 endif
+
+" ipdb debug abrreviation
+  ab ip import ipdb; ipdb.set_trace(context=12)
 
 " Map the leader key to ,
   let mapleader="\<SPACE>"
@@ -132,6 +138,13 @@ endif
     set undolevels=200    " Number of undo levels.
   endif
 
+  " create undo directory
+  silent !mkdir -p ~/.vimundo
+  " tell it to use an undo file
+  set undofile
+  " set a directory to store the undo history
+  set undodir=~/.vimundo/
+
   " Path/file expansion in colon-mode.
   set wildmenu
   set wildmode=list:longest
@@ -232,7 +245,7 @@ endif
 
 " Experimental {
   " Search and Replace
-  nmap <Leader>s :%s//g<Left><Left>
+  nmap <Leader>s :%s//c<Left><Left>
 " }
 
 " Plugin Settings {
@@ -274,20 +287,23 @@ endif
       " let g:deoplete#sources#clang#sort_algo = 'priority'
     " }
 
-    " Deoplete-jedi Python path
+    " Deoplete-jedi {
+      " Python path
       let g:deoplete#sources#jedi#python_path = '/usr/bin/python3'
+    " }
 
     " auto close preview window when autocomplete is done
       autocmd CompleteDone * pclose
     " close popup when open with enter
       inoremap <expr> <CR> pumvisible()? deoplete#mappings#close_popup() : "\<CR>"
+      set completeopt+=noinsert
   " }
   " NERDTree {
       " open NERDTree with ctrl-n
       map <C-n> :NERDTreeToggle<CR>
       " open a NERDTree automatically when vim starts up if no files were specified
-       autocmd StdinReadPre * let s:std_in=1
-       autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+       " autocmd StdinReadPre * let s:std_in=1
+       " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
       " close vim if the only window left open is a NERDTree
       autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   " }
